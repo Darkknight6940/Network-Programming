@@ -1,8 +1,8 @@
 /*
-	Alseny Sylla
-	Chen
-
-	Assignment 3
+ Assignment 3
+ Team members:
+	Sylla, Alseny
+	Qianjun Chen 
 */
 #include <poll.h>
 #include <sys/uio.h>
@@ -32,6 +32,11 @@
 #include <sys/select.h>      /* <===== */
 
 using namespace std;
+
+//Commands or Classes to Implement:
+/*
+	Channel, USER, LIST, JOIN, PART, OPERATOR, KICK, PRIVMSG, QUIT
+*/
 
 
 int main(int argc, char* argv[])
