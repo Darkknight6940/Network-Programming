@@ -141,7 +141,7 @@ bool operator==(const User &first, const User &second){
 
 
 //Global variable to store all the channels in a list
-std::list<Channel> curr_channels;
+std::vector<Channel> curr_channels;
 
 int main(int argc, char* argv[])
 {
@@ -158,8 +158,8 @@ int main(int argc, char* argv[])
       return EXIT_FAILURE;
   }
 
-   
   std::string operator_password =""; //will store password supplied
+
   if(argc ==2)
   {
     std::string s =argv[1];
@@ -167,6 +167,60 @@ int main(int argc, char* argv[])
     std::string token = s.substr(s.find(delimiter)+1, s.size()); 
 
     operator_password = token;
+  }
+
+  
+  //CREATE THE SOCKET LISTENER FOR CONNECTION AS TCP SOCKET
+  int sock;
+  /*using IPV6 Internet protocols (AF_INET6) for the domain
+    ~using SOCK_STREAM for sequenced, reliable, two way, connection-based byte streams.
+    ~0 is used normally as the  single protocol. 
+    ~on success, a file descriptor for new socket is retuned. on error, -1 is returned*/
+  if((sock = socket( AF_INET6, SOCK_STREAM, 0)) == -1){
+    perror("Unsuccessful socket() systems call");
+    return EXIT_FAILURE;
+  }
+  //Let's also make sure the file descriptor of the socket is not less than 0.
+  if(sock < 0)
+  {
+    perror("file descritor of the socket < 0. See Socket()");
+    return EXIT_FAILURE;
+  }
+
+
+  //CREATE OPTION (setsockopt()) TO MANIPULATE OPTIONS for our socket
+  int setOptions = 1;
+  /*SQL_SOCKET is used to manipulate options at the sockets API level
+    SO_REUSEADDR is used to reuse the ip address and port and coninuing the connection
+    The last two arguments are used to access option values for setsockopt()
+    On success, 0 is returned and On error -1*/
+  if(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char * ) &setOptions, sizeof(setOptions)) < 0){
+      perror("setsockopt err");
+      exit(EXIT_FAILURE);
+  }
+
+  //Using sockaddr_in6 structure since it is bigger than generic sockaddr. All address 
+  //types can be stored safely
+  struct sockaddr_in6 server; //server  side
+  struct sockaddr_in6 client; //client side
+
+  server.sin6_family = AF_INET6;
+  server.sin6_addr   = in6addr_any;
+
+  //Randomly chosen port
+  unsigned short port = 8128;
+
+  /* htons() is host-to-network-short for marshalling */
+  /* Internet is "big endian"; Intel is "little endian" */
+  server.sin6_port = htons( port );
+  int len = sizeof( server );
+
+
+  //associate the server socket endpoint with a particular port
+  if ( bind( sock, (struct sockaddr *)&server, len ) < 0 )
+  {
+    perror( "bindind (bind() server socket endpoint couldn't associate with port" );
+    exit( EXIT_FAILURE );
   }
 
 	
