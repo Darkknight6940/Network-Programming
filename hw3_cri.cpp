@@ -143,6 +143,7 @@ bool operator==(const User &first, const User &second){
 //Global variable to store all the channels in a list
 std::vector<Channel> curr_channels;
 
+
 int main(int argc, char* argv[])
 {
 
