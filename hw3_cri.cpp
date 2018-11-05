@@ -33,7 +33,20 @@
 
 using namespace std;
 
-
+void remove_client(int fd, int client_i){
+    for (int i = 0 ; i < client_i ; i++ )
+    {
+        if ( fd == client_socks[i] )
+        {
+            int k;
+            for ( k = i ; k < client_i - 1 ; k++ )
+            {
+                client_socks[k] = client_socks[k+1];
+            }
+            break;
+        }
+    }
+}
 
 class User{
   public:
@@ -242,6 +255,7 @@ int main(int argc, char* argv[])
     int addrlen, new_socket, i, len, ready;
     int cliend_i = 0;
     char buff[1024];
+    std::string invalid_com = "";
     
     //set of socket descriptors
     fd_set readfds;
@@ -282,13 +296,11 @@ int main(int argc, char* argv[])
                 }
                 else if(len == 0){
                     printf("Client %d closed connection.\n", client_fd);
-                    close(fd);
+                    close(client_fd);
                     
                     //here should be function that remove a client from list
-                    
-                    
-                    
-                    
+                    remove_client(client_fd, client_i);
+                    client_i--;
                 }
                 else{
                     //received packet
@@ -307,6 +319,7 @@ int main(int argc, char* argv[])
                         }
                     }
                     
+                    
                     //parsing
                     if((token != NULL && std:string(origion).size() != std::string(token).size())
                        ||(token != NULL && std::string(token)== "PART")){
@@ -320,10 +333,8 @@ int main(int argc, char* argv[])
                             }
                             close(client_fd);
                             //here should be function that remove a client from list
-                            
-                            
-                            
-                            
+                            remove_client(client_fd, client_i);
+                            client_i--;
                             commands.erase(commands.begin()+i);
                             continue;
                         }
@@ -348,37 +359,74 @@ int main(int argc, char* argv[])
                         
                         
                         
+                        client_i--;
                         commands.erase(commands.begin()+i);
                         continue;
                     }
                     
                     
                     //USER
-                    
+                    if(strncmp(first.c_str(), "USER", 4)==0){
+                        
+                        
+                        
+                        
+                        
+                    }
                     
                     
                     //LIST
-                    
+                    else if(strncmp(first.c_str(), "LIST", 4)==){
+                        
+                        
+                        
+                        
+                    }
                     
                     
                     //JOIN
-                    
+                    else if(strncmp(first.c_str(), "JOIN", 4)==){
+                        
+                        
+                        
+                        
+                    }
                     
                     
                     //PART
-                    
+                    else if(strncmp(first.c_str(), "PART", 4)==){
+                        
+                        
+                        
+                        
+                    }
                     
                     //OPERATOR
-                    
+                    else if(strncmp(first.c_str(), "OPERATOR", 8)==){
+                        
+                        
+                        
+                        
+                    }
                     
                     
                     //KICK
-                    
+                    else if(strncmp(first.c_str(), "KICK", 4)==){
+                        
+                        
+                        
+                        
+                    }
                     
                     
                     
                     //PRIVMSG
-                    
+                    else if(strncmp(first.c_str(), "PRIVMSG", 7)==){
+                        
+                        
+                        
+                        
+                    }
                     
                     
                     
@@ -393,13 +441,13 @@ int main(int argc, char* argv[])
                             curr_channels[k].remove_user(names[client_fd]);
                         }
                         //here should be function that remove a client from list
-                        
-                        
-                        
-                        
-                        
+                        remove_client(client_fd, client_i);
+                        client_i--;
                         commands.erase(commands.begin()+i);
                     }
+                    
+                    
+                    
                     
                 }
                 
