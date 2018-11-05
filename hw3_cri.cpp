@@ -308,7 +308,49 @@ int main(int argc, char* argv[])
                     }
                     
                     //parsing
-                    
+                    if((token != NULL && std:string(origion).size() != std::string(token).size())
+                       ||(token != NULL && std::string(token)== "PART")){
+                        std::string temp(token);
+                        first = temp;
+                        
+                        if(commands[i].size() == 0 && strncmp(first.c_str(), "USER", 4) != 0){
+                            invalid_com = "Invalid command, please identify yourself with USER.\n";
+                            if((len = send(client_fd, invalid_com.c_str(), invalid_com.size(), 0)) != invalid_com.size()){
+                                perror("send()\n");
+                            }
+                            close(client_fd);
+                            //here should be function that remove a client from list
+                            
+                            
+                            
+                            
+                            commands.erase(commands.begin()+i);
+                            continue;
+                        }
+                        commands[i].push_back(first);
+                        
+                        if((token = strtok(NULL, sep)) != NULL){
+                            if(token[strlen(token)-1] == '\n'){
+                                token[strlen(token)-1]='\0';
+                            }
+                            std::string temp(token);
+                            second = temp;
+                        }
+                        
+                    }
+                    else{
+                        invalid_com = "Invalid command.\n";
+                        if((len = send(client_fd, invalid_com.c_str(), invalid_com.size(), 0)) != invalid_com.size()){
+                            perror("send()");
+                        }
+                        close(client_fd);
+                        //here should be function that remove a client from list
+                        
+                        
+                        
+                        commands.erase(commands.begin()+i);
+                        continue;
+                    }
                     
                     
                     //USER
