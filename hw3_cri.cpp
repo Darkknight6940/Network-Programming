@@ -367,10 +367,20 @@ int main(int argc, char* argv[])
                     
                     //USER
                     if(strncmp(first.c_str(), "USER", 4)==0){
-                        
-                        
-                        
-                        
+                         if(second.size() > 20 || !std::regex_match(second,std::regex("[a-zA-Z][_0-9a-zA-Z]"))){
+                            message = "Invalid user name.\n";
+                            if((len=send(client_fd, message.c_str(), message.size(), 0))!= message.size() ){
+                                perror("send()");
+                            }
+                        }else{
+                            User newu(second);
+                            names.insert(std::make_pair(client_socks[i],second));
+                            curr_users.push_back(newu);
+                            message = "Welcome, "+second+".\n";
+                            if((len = send(client_fd, message.c_str(), message.size(), 0))!= message.size()){
+                                perror("send()");
+                            }
+                        }
                         
                     }
                     
