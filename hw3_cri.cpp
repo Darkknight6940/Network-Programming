@@ -383,10 +383,23 @@ int main(int argc, char* argv[])
                     
                     
                     //QUIT
-                    
-                    
-                    
-                    
+                    else if(strncmp(first.c_str(), "QUIT", 4)==){
+                        names.erase(client_fd);
+                        close(client_fd);
+                        for(int j = 0; j< curr_users.size(); j++){
+                            curr_channels.erase(curr_users.begin()+j);
+                        }
+                        for(int k = 0; k< curr_channels.size(); k++){
+                            curr_channels[k].remove_user(names[client_fd]);
+                        }
+                        //here should be function that remove a client from list
+                        
+                        
+                        
+                        
+                        
+                        commands.erase(commands.begin()+i);
+                    }
                     
                 }
                 
