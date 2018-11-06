@@ -7,18 +7,14 @@
  */
 #include <poll.h>
 #include <sys/uio.h>
-#include <unistd.h>
-#include   <netdb.h>
-
-
+#include <netdb.h>
+#include <sstream>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
-#include <string>
 #include <cstdlib>
 #include <stdlib.h>
 #include <list>
@@ -30,7 +26,7 @@
 #include <regex>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <sys/select.h>      /* <===== */
+#include <sys/select.h>
 
 using namespace std;
 
@@ -696,10 +692,60 @@ int main(int argc, char* argv[])
                     
                     //PRIVMSG
                     else if(strncmp(first.c_str(), "PRIVMSG", 7)==0){
-                        
-                        
-                        
-                        
+                        std::string message = "";
+                        if(second == ""){
+                            message = "Invalid command\n";
+                            received = send(client_fd, message.c_str(), message.size(), 0);
+                            if(received != message.size()){
+                                perror("send() failed in PRIVMSG");
+                            }
+                        }else{
+                            std::string third = "";
+                            std::stringstream t(origion);
+                            std::string tempf, temps;
+                            t>>tempf;
+                            t>>temps;
+                            std::string curr_word;
+                            while(t>>curr_word){
+                                third += curr_word+" ";
+                            }
+                            if(second[0] == '#'){
+                                if(third != ""){
+                                    if(third.size() <= 512){
+                                        std::vector<Channel>::iterator it = std::find(curr_channels.begin(), curr_channels.end(), second);
+                                        if(it != curr_channels.end()){
+                                            message = second+"> "+names[client_fd]+": "+third+"\n";
+                                            for(std::map<int, std::string>::iterator it2 = names.begin(); it2!= names.end(); it2++){
+                                                if(it->user_in(it2->second)){
+                                                    received = send(it2->first, message.c_str(), message.size(), 0);
+                                                    if(received != message.size()){
+                                                        perror("send() failed in PRIVMSG");
+                                                    }
+                                                }
+                                                
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                            }else{
+                                if(third != ""){
+                                    if(third.size() <= 512){
+                                        message = names[client_fd]+": "+third+"\n";
+                                        for(std::map<int, std::string>::iterator it = names.begin(); it != names.end(); it++){
+                                            if(it->second == second){
+                                                received = send(it->first, message.c_str(), message.size(), 0);
+                                                if(received != message.size()){
+                                                    perror("send() failed in PRIVMSG");
+                                                }
+                                            }
+                                            
+                                        }
+                                    }
+                                }
+                                
+                            }
+                        }
                     }
                     
                     
