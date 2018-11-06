@@ -503,12 +503,11 @@ int main(int argc, char* argv[])
                     
                     //JOIN
                     else if(strncmp(first.c_str(), "JOIN", 4)== 0){
-<<<<<<< HEAD
+
                         
                         //std::string send_string = JOIN(second);
                         
-                        
-=======
+
                         std::string message = "";
                         if(second.size() > 20 || !std::regex_match(second, std::regex("#[a-zA-Z][_0-9a-zA-Z]*"))){
                             message = "Invalid channel name.\n";
@@ -540,18 +539,16 @@ int main(int argc, char* argv[])
                                 perror("send failed in JOIN");
                             }
                         }
->>>>>>> refs/remotes/origin/master
                     }
                     
                     
                     //PART
                     else if(strncmp(first.c_str(), "PART", 4)==0){
-<<<<<<< HEAD
                        
                         
                         
                         
-=======
+
                         //std::cout<<"WITHIN THIS BRANCH.."<<std::endl;
                         
                         std::string message = "";
@@ -600,7 +597,6 @@ int main(int argc, char* argv[])
                             
                             
                         }
->>>>>>> refs/remotes/origin/master
                     }
                     
                     //OPERATOR
