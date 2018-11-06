@@ -221,6 +221,42 @@ std::string LIST (const std::string &second_command)
 
 }
 
+std::string OPERATOR (const std::string &second_command, int client_fd, const std::string& operator_password)
+{
+    /*
+        Passwords should be at most 20 characters and
+        should adhere to the following regular expression: [a-zA-Z][_0-9a-zA-Z]*
+    */
+    if(!std::regex_match(second_command, std::regex("[a-zA-Z][_0-9a-zA-Z]*")))
+    {
+        //this implies that it's invalid password. not the right format
+        return std::string("Operators not permitted.\n");
+    }
+    else
+    {
+        if(second_command !=  operator_password)//didn't get the password right
+        {
+            return std::string("Invalid OPERATOR command. \n");
+        }
+        else
+        {
+            //passwords match 
+            //we look for the user and we make him the operator
+            for(unsigned int i =0; i < curr_users.size(); i++)
+            {
+                if (curr_users[i].get_name()== names[client_fd])
+                {
+                    curr_users[i].makeOperator();
+                }
+            }
+            return std::string("OPERATOR status bestowed.\n");
+        }
+    }
+}
+
+
+
+
 
 int main(int argc, char* argv[])
 {
@@ -465,7 +501,7 @@ int main(int argc, char* argv[])
                     //JOIN
                     else if(strncmp(first.c_str(), "JOIN", 4)== 0){
                         
-                        
+                        //std::string send_string = JOIN(second);
                         
                         
                     }
@@ -473,7 +509,7 @@ int main(int argc, char* argv[])
                     
                     //PART
                     else if(strncmp(first.c_str(), "PART", 4)==0){
-                        
+                       
                         
                         
                         
@@ -481,8 +517,12 @@ int main(int argc, char* argv[])
                     
                     //OPERATOR
                     else if(strncmp(first.c_str(), "OPERATOR", 8)==0){
-                        
-                        
+                        std::string send_string = OPERATOR(second, client_fd, operator_password);
+                        received = send(client_fd, send_string.c_str(), send_string.size(),0);
+                        if(received != send_string.size())
+                        {
+                            perror("send() failed in OPERATOR");
+                        }
                         
                         
                     }
@@ -490,10 +530,82 @@ int main(int argc, char* argv[])
                     
                     //KICK
                     else if(strncmp(first.c_str(), "KICK", 4)==0){
-                        
-                        
-                        
-                        
+                        //first we find the operator
+                        int  user_curr_loc = -1;
+                        for(unsigned int j=0; j < curr_users.size(); j++)
+                        {
+                            if(curr_users[j] == User(names[client_fd]))
+                            {
+                                user_curr_loc = j;
+                                break;
+                            }
+                        }
+                        if(user_curr_loc != -1 && curr_users[user_curr_loc].is_operator())
+                        {
+                            //We found the user and he is the operator
+
+                            //let's find the channels
+                            int chanel_curr_loc = -1;
+                            for(unsigned int j =0; j < curr_channels.size(); j++)
+                            {
+                                if (curr_channels[j] == Channel(second))
+                                {
+                                    chanel_curr_loc = j;
+                                    break;
+                                }
+                            }
+                            if(chanel_curr_loc != -1)
+                            {
+                               char* third = strtok(NULL, " ");
+                               if(third != NULL)//this refers to the user that will be kicked out
+                               {
+                                    if(third[strlen(third)-1]=='\n')
+                                    {
+                                        third[strlen(third)-1]='\0';
+                                    }
+
+                                    for(std::map<int, std::string>::iterator name_itr = names.begin(); name_itr != names.end(); name_itr++)
+                                    {
+                                        if(curr_channels[chanel_curr_loc].user_in(name_itr->second))
+                                        {
+                                            std::string send_string = second + ">" + third + " has been kicked from the channel.\n";
+                                            received = send(name_itr->first, send_string.c_str(), send_string.size(), 0);
+                                            if(received != send_string.size())
+                                            {
+                                                perror("send() failed in KICK");
+                                            }
+
+                                        }
+                                    }
+
+                                   curr_channels[chanel_curr_loc].remove_user(std::string(third)); 
+                               } 
+                            }
+                        }
+                        else
+                        {
+                            if(!curr_users[user_curr_loc].is_operator())
+                            {
+                                std::string send_string = "Operator privileges are not granted.\n";
+                                received = send(client_fd, send_string.c_str(), send_string.size(),0);
+                                if(received != send_string.size())
+                                {
+                                    perror("send() failed in Kick");
+                                }
+                            }
+                            else
+                            {
+                                //At this point, if he is the operator, then that means we couldn't find 
+                                //the channel
+                                std::string send_string = "Channel not found. \n";
+                                received = send(client_fd, send_string.c_str(), send_string.size(),0);
+                                if(received != send_string.size())
+                                {
+                                    perror("send failed, in KICK");
+                                }
+                            }
+                        }
+
                     }
                     
                     
