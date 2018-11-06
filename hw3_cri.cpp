@@ -2,9 +2,9 @@
 /*
  Assignment 3
  Team members:
-  Sylla, Alseny
-  Qianjun Chen 
-*/
+ Sylla, Alseny
+ Qianjun Chen
+ */
 #include <poll.h>
 #include <sys/uio.h>
 #include <unistd.h>
@@ -36,109 +36,109 @@ using namespace std;
 
 
 class User{
-  public:
+public:
     User(std::string username){
-      name = username;
-      isOperator = false;
+        name = username;
+        isOperator = false;
     }
-
+    
     const std::string get_name() const{
-      return name;
+        return name;
     }
-
+    
     void makeOperator(){
-      isOperator = true;
+        isOperator = true;
     }
-
+    
     bool is_operator(){
-      return isOperator;
+        return isOperator;
     }
-
+    
     ~User(){
-
+        
     }
-
-
-  private:
+    
+    
+private:
     std::string name;
     bool isOperator;
-
+    
 };
 
 class Channel{
-  public:
-    //copy constructor for the channel class. 
+public:
+    //copy constructor for the channel class.
     Channel(std::string cname){
-      users = std::list<User>();
-      channel_name = cname;
+        users = std::list<User>();
+        channel_name = cname;
     }
-    //name of the current channel. 
+    //name of the current channel.
     std::string get_cname() const{
-      return channel_name;
+        return channel_name;
     }
     //add a user to the channel
     void add_user(std::string username){
-      users.push_back(User(username));
+        users.push_back(User(username));
     }
-
+    
     //Function that returns the total number of users in the channel
     int users_num(){
-      return users.size();
+        return users.size();
     }
-  /*
-    if a user is this channel, this function will remove them
-    and return true. Otherwise false
-  */
-  bool remove_user(std::string username){
-      std::list<User>::iterator it = std::find(users.begin(), users.end(), User(username));
-      if(it!=users.end()){
-        users.erase(it);
-        return true;
-      }
-
-
-      return false;
+    /*
+     if a user is this channel, this function will remove them
+     and return true. Otherwise false
+     */
+    bool remove_user(std::string username){
+        std::list<User>::iterator it = std::find(users.begin(), users.end(), User(username));
+        if(it!=users.end()){
+            users.erase(it);
+            return true;
+        }
+        
+        
+        return false;
     }
-     
-    //Boolean to verify whether a user is this channel 
+    
+    //Boolean to verify whether a user is this channel
     bool user_in(std::string username){
-      std::list<User>::iterator it = std::find(users.begin(), users.end(), User(username));
-      if(it != users.end()){
-        return true;
-      }
-
-      return false;
-  }
-
+        std::list<User>::iterator it = std::find(users.begin(), users.end(), User(username));
+        if(it != users.end()){
+            return true;
+        }
+        
+        return false;
+    }
+    
     //list containing all current activer users
     const std::list<User>& get_users() const{
-      return users;
+        return users;
     }
-
+    
     ~Channel(){
-
+        
     }
-
-  private:
+    
+private:
     std::list<User> users;
     std::string channel_name;
-
-
+    
+    
 };
 
 /*
-  Just in case users have the same nickname
-  create user equal operator to compare
-*/
+ Just in case users have the same nickname
+ create user equal operator to compare
+ */
 bool operator==(const User &first, const User &second){
-  if(first.get_name()== second.get_name()){
-    return true;
-  }
-  return false;
+    if(first.get_name()== second.get_name()){
+        return true;
+    }
+    return false;
 }
 
 bool operator == (const Channel &c1, const Channel &c2){
-  return c1.get_cname() == c2.get_cname();
+    return c1.get_cname() == c2.get_cname();
 }
 
 
@@ -169,12 +169,12 @@ void remove_client(int fd, int client_i){
 }
 
 //LIst is a function that returns a string displaying all the channels
-// or users in a specific channels. 
-// Then we will send that string to the socket. 
+// or users in a specific channels.
+// Then we will send that string to the socket.
 std::string LIST (const std::string &second_command)
 {
     std::string send_string = "";//will return this string
-    //if second_command is empty then will return all the channels. 
+    //if second_command is empty then will return all the channels.
     if (second_command == "")
     {
         //No channel specified
@@ -183,7 +183,7 @@ std::string LIST (const std::string &second_command)
         {
             send_string += ("* " + curr_channels[i].get_cname())+ "\n";
         }
-
+        
     }
     else
     {
@@ -191,7 +191,7 @@ std::string LIST (const std::string &second_command)
         int channel_location  = -1;
         for( int i=0; i < curr_channels.size(); i++){
             if(curr_channels[i].get_cname()== second_command){
-                //we found the channel in all channels. 
+                //we found the channel in all channels.
                 channel_location = i;
             }
         }
@@ -199,7 +199,7 @@ std::string LIST (const std::string &second_command)
         {
             send_string += "There are currently " + std::to_string(curr_channels[channel_location].users_num()) + " members.\n";
             send_string += second_command + " members: ";
-
+            
             std::list<User>::const_iterator users_itr;
             users_itr = curr_channels[channel_location].get_users().begin();
             for(int u = 0; u < curr_channels[channel_location].users_num(); u++)
@@ -208,18 +208,21 @@ std::string LIST (const std::string &second_command)
                 users_itr++;
             }
             send_string += "\n";
-
+            
         }
         else
         {
             send_string += "There are currently " + std::to_string(curr_channels.size()) + " channels." + "\n";
         }
     }
-
-
+    
+    
     return send_string;
-
+    
 }
+
+
+
 
 std::string OPERATOR (const std::string &second_command, int client_fd, const std::string& operator_password)
 {
@@ -397,6 +400,7 @@ int main(int argc, char* argv[])
                     
                     //here should be function that remove a client from list
                     remove_client(client_fd, cliend_i);
+                    commands.erase(commands.begin()+i);
                     cliend_i--;
                 }
                 else{
@@ -415,7 +419,6 @@ int main(int argc, char* argv[])
                             token[strlen(token)-1] = '\0';
                         }
                     }
-                    
                     
                     //parsing
                     if((token != NULL && std::string(origion).size() != std::string(token).size())
@@ -452,8 +455,8 @@ int main(int argc, char* argv[])
                             perror("send()");
                         }
                         close(client_fd);
-                       
-
+                        
+                        
                         remove_client(client_fd, cliend_i);
                         
                         
@@ -466,8 +469,8 @@ int main(int argc, char* argv[])
                     
                     //USER
                     if(strncmp(first.c_str(), "USER", 4)==0){
-                         if(second.size() > 20 || !std::regex_match(second,std::regex("[a-zA-Z][_0-9a-zA-Z]"))){
-                           std::string message = "Invalid user name.\n";
+                        if(second.size() > 20 || !std::regex_match(second, std::regex("[a-zA-Z][_0-9a-zA-Z]*"))){
+                            std::string message = "Invalid user name.\n";
                             if((received=send(client_fd, message.c_str(), message.size(), 0))!= message.size() ){
                                 perror("send()");
                             }
@@ -500,19 +503,104 @@ int main(int argc, char* argv[])
                     
                     //JOIN
                     else if(strncmp(first.c_str(), "JOIN", 4)== 0){
+<<<<<<< HEAD
                         
                         //std::string send_string = JOIN(second);
                         
                         
+=======
+                        std::string message = "";
+                        if(second.size() > 20 || !std::regex_match(second, std::regex("#[a-zA-Z][_0-9a-zA-Z]*"))){
+                            message = "Invalid channel name.\n";
+                            received = send (client_fd, message.c_str(), message.size(), 0);
+                            if(received != message.size()){
+                                perror("send failed in JOIN");
+                            }
+                        }else{
+                            Channel new_chanel(second);
+                            std::vector<Channel>::iterator it = std::find(curr_channels.begin(), curr_channels.end(), new_chanel);
+                            if(it == curr_channels.end()){
+                                new_chanel.add_user(names[client_socks[i]]);
+                                curr_channels.push_back(new_chanel);
+                            }else{
+                                it->add_user(names[client_socks[i]]);
+                                for(std::map<int,std::string>::iterator it2 = names.begin(); it2 != names.end(); it2++){
+                                    if(it->user_in(it2->second) && it2->second != names[client_socks[i]]){
+                                        std::string notification = second+"> "+names[client_socks[i]]+" joined the channel.\n";
+                                        if((received = send(it2->first, notification.c_str(), notification.size(), 0))!= notification.size()){
+                                            perror("send() failed in join");
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                            message = "Joined channel "+second+"\n";
+                            received = send (client_fd, message.c_str(), message.size(), 0);
+                            if(received != message.size()){
+                                perror("send failed in JOIN");
+                            }
+                        }
+>>>>>>> refs/remotes/origin/master
                     }
                     
                     
                     //PART
                     else if(strncmp(first.c_str(), "PART", 4)==0){
+<<<<<<< HEAD
                        
                         
                         
                         
+=======
+                        //std::cout<<"WITHIN THIS BRANCH.."<<std::endl;
+                        
+                        std::string message = "";
+                        if(second == ""){
+                            for(int k = 0; k < curr_channels.size(); k++){
+                                curr_channels[k].remove_user(names[client_fd]);
+                            }
+                        }else{
+                            std::vector<Channel>::iterator it = std::find(curr_channels.begin(), curr_channels.end(), Channel(second));
+                            if(it == curr_channels.end()){
+                                message= "Channel "+second+" does not exist.\n";
+                                received = send (client_fd, message.c_str(), message.size(), 0);
+                                if(received != message.size()){
+                                    perror("send failed in PART");
+                                }
+                            }else{
+                                bool removal = it->remove_user(names[client_fd]);
+                                if(!removal){
+                                    message = "You are not currently in #" + second+".\n";
+                                    received = send(client_fd, message.c_str(), message.size(), 0);
+                                    if(received != message.size()){
+                                        perror("send() failed in PART");
+                                    }
+                                }else{
+                                    message = second+"> "+names[client_fd]+" left the channel.\n";
+                                    for(std::map<int, std::string>::iterator it2 = names.begin(); it2!=names.end(); it2++){
+                                        if(it->user_in(it2->second)){
+                                            received = send(it2->first, message.c_str(), message.size(), 0);
+                                            if(received != message.size()){
+                                                perror("send() failed in PART");
+                                            }
+                                        }
+                                        
+                                    }
+                                    received =send(client_fd, message.c_str(), message.size(), 0);
+                                    if(received != message.size()){
+                                        perror("send() failed in PART");
+                                    }
+                                    
+                                    
+                                }
+                                
+                                
+                            }
+                            
+                            
+                            
+                        }
+>>>>>>> refs/remotes/origin/master
                     }
                     
                     //OPERATOR
