@@ -563,7 +563,7 @@ int main(int argc, char* argv[])
                             }else{
                                 bool removal = it->remove_user(names[client_fd]);
                                 if(!removal){
-                                    message = "You are not currently in #" + second+".\n";
+                                    message = "You are not currently in " + second+".\n";
                                     received = send(client_fd, message.c_str(), message.size(), 0);
                                     if(received != message.size()){
                                         perror("send() failed in PART");
