@@ -1,6 +1,8 @@
 # Network-Programming
 RPI-network programming course (CSCI-4220 ). Programming with an overview of the principles of computer networks, including an overview of the OSI reference model and various popular network protocol suites. Concentration on Unix interprocess communication (IPC), network programming using TCP and UDP, as well as client-side and mobile programming. Programming projects in C++ are required.
 
+Software used: wireshark
+
 TOPICS COVERED:
   History / OSI model; Unix commands
 	High level UDP and TCP/IP; UDP sockets
