@@ -1,0 +1,31 @@
+Qianjun Chen & Alseny Sylla
+
+Usage:
+	Compile: make    (makefile is provided)
+	Run: use ./dht.out 127.0.0.1 port number seed and k
+
+Result:
+	The program compiles and runs successfully on our machines. 
+    
+	We tested functions:
+		CONNECT
+		FIND_NODE
+		FIND_DATA
+		STORE
+		QUIT
+	There are many norner cases we have not considered yet but
+    We tested many times by stores nodes in buckets. 
+
+	We found SHA1 open source code on github, then modified to get 
+		a nodeId from the seed. 
+
+
+Time spend on the homework: 
+	Over 25 hours.
+    
+SOURCE
+
+1)lecture 21
+2)Homework Instruction
+3)Github Repository for SHA function
+	https://github.com/mitul227/Chord-DHT
