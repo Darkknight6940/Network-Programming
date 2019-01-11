@@ -1,0 +1,8 @@
+TFTP server according to RFC 1350.
+fork(): multiple processes running at the same time
+History / OSI model; Unix commands
+High level UDP and TCP/IP; UDP sockets
+tftp; Sorcerer’s Apprentice
+Linux basics, C system calls, fork
+Signals, Byte ordering, misc. inet functions
+TCP sockets (SOCK_STREAM); Client / server model ; Daemons
