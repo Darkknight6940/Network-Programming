@@ -1,0 +1,15 @@
+group members: Qianjun Chen, Alseny Sylla
+
+After the server is run, it will print out the port number as described in the instruction.
+
+In our program, clients can join by calling "netcat [address] [port]" at anytime. 
+
+Once a client is connected, the server will print out successful client connected, and wait until the client provides a valid name. Even though there is another client join during the name selection process of the first client, the server will deal with the first client until the valid name is chosen. 
+
+Once the name is selected, the server will print out "adding to list of sockets as #" where # is the index of the client in the list. 
+
+The client can quit anytime after selecting the valid name without interrupting the game by pressing ctrl+c. 
+
+Typing in guesses and then enter in client terminal, server will send out message regarding the correctness of the guess. 
+
+The game will not end unless we terminate it or getting the correct answer. 
