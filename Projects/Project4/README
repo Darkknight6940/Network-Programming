@@ -13,8 +13,7 @@ Result:
 		FIND_DATA
 		STORE
 		QUIT
-	There are many norner cases we have not considered yet but
-    We tested many times by stores nodes in buckets. 
+
 
 	We found SHA1 open source code on github, then modified to get 
 		a nodeId from the seed. 
